@@ -1,0 +1,15 @@
+Item;Description;Type;Page;Décimales;Unité;Options;Min;Max;Default;Step;Borne1;Borne2;Borne3;Borne4;Bulle1;Bulle2;Question
+Code_Sujet;Identifiant unique du participant;text;1;;;;;;;;;;;;;;
+Age;Tranche d'âge;radio;1;;ans;"Enfant;Adolescent;Jeune adulte;Adulte;Senior";;;;;;;;;;;
+Email;Adresse email (optionnel);text;3;;;;;;;;;;;;;;
+Vitesse_Horizontale;Temps de réaction – saccades horizontales;num;2;0,00;ms;;0;1000;550;10;450;500;700;850;;;
+Vitesse_Verticale;Temps de réaction – saccades verticales;num;2;0,00;ms;;0;1000;400;10;300;;;400;;;
+GO;GO - Temps de réponse moyen;num;2;0,00;ms;;0;1000;300;10;500;;;600;;;
+NOGO;NOGO - Pourcentage d’erreurs;num;2;0,00;%;;0;100;5;1;;;;10;;;
+Vision_Faible_Contraste;Résultat vision faible contraste;num;2;1,00;%;;0;100;0;0;;;;1;;;
+Stereopsie;Résultat du test de stéréopsie;num;2;0,00;secondes d'arc;;0;150;45;1;;120;60;30;;;
+Decision_Visuelle;Prise de décision visuelle;radio;1;0,00;;"Rapide;Moyenne;Lente";;;;;;;;;;;Vous sentez-vous rapide dans vos prises de décision lorsqu’il faut réagir visuellement ?
+Fatigue_Visuelle;Niveau de fatigue visuelle ressenti;slider;1;0,00;/10;;1;10;5;1;;;;;Aucune fatigue ressentie;Forte fatigue;Ressentez-vous souvent une fatigue visuelle lors de vos activités quotidiennes ?
+Sensibilite_Lumineuse;Sensibilité subjective à la lumière;radio;1;0,00;;"Oui;Non;Parfois";0;5;2;1;;;;;;;Êtes-vous gêné(e) par les changements brusques de luminosité ?
+Vision_Peri;Capacité perçue à percevoir en périphérie;radio;1;0,00;;"Bon;Moyen;Faible";0;5;3;1;;;;;;;Avez-vous l’impression de bien percevoir ce qui se passe autour de vous sans bouger les yeux ?
+Confort_Visuel;Confort global visuel;slider;1;0,00;/10;;1;10;5;1;;;;;Mauvais confort;Très bon confort;Comment évalueriez-vous votre confort visuel global (écran, lecture, mouvement) ?
