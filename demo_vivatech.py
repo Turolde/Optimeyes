@@ -280,7 +280,6 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             "borne4": row["Borne4"]
         }
         for _, row in df_config.iterrows()
-        st.write(f"Traitement de : {row.to_dict()}")
         if row["Item"] in indicateurs_jauge and str(row["Min"]).strip() and str(row["Max"]).strip()
     }
 
@@ -608,6 +607,7 @@ def afficher_page_formulaire():
             page_config = df_config[df_config["Page"] == (1 if page == 0.3 else 2)]
 
             for _, row in page_config.iterrows():
+                st.write(f"Traitement de : {row.to_dict()}")
                 description = row.get("Description").strip()
                 if row.get("Question", "").strip():
                     question = f"**{row['Question'].strip()}**"
