@@ -742,6 +742,9 @@ def afficher_page_formulaire():
         afficher_resultats_complets(
             st.session_state["resultat"], df_config, st.session_state.form_data
         )
+        
+        st.markdown("---")            
+
         email = st.text_input("Souhaitez-vous recevoir un récapitulatif ou donner votre avis ? (e-mail facultatif)")
         # Enregistrer avec clique sur un bouton
         if st.button("Valider et enregistrer"):
