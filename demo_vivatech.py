@@ -359,55 +359,6 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             commentaire = resultat["commentaires"].get(indicateur, "")
             if commentaire:
                 st.markdown(f"<span style='font-size: 0.9em; color: grey;'>{commentaire}</span>", unsafe_allow_html=True)
-    # --- EXPORT PDF --- #
-
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-
-    # Titre
-    pdf.set_text_color(30, 58, 95)
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Rapport Visuo-Cognitif Optimeyes", ln=True, align="C")
-
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", size=12)
-
-    pdf.ln(10)
-    pdf.cell(0, 10, f"🧑 Code sujet : {form_data.get('code_sujet', 'Non précisé')}", ln=True)
-    pdf.cell(0, 10, f"🎯 Profil dominant : {profil['profil']}", ln=True)
-    pdf.cell(0, 10, f"📊 Score global : {profil['score_global']}%", ln=True)
-    pdf.cell(0, 10, f"🧠 Score subjectif : {profil['indice_subjectif']}%", ln=True)
-    pdf.cell(0, 10, f"🔬 Score performance : {profil['indice_performance']}%", ln=True)
-
-    pdf.ln(10)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Scores par profil :", ln=True)
-
-    pdf.set_font("Arial", size=12)
-    for k, v in profil["scores"].items():
-        pdf.cell(0, 10, f"• {k} : {v}%", ln=True)
-
-    pdf.ln(10)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Radar analytique (5 axes) :", ln=True)
-
-    pdf.set_font("Arial", size=12)
-    for axe, val in profil["radar_analytique"].items():
-        pdf.cell(0, 10, f"• {axe} : {val}%", ln=True)
-
-    # Export en mémoire
-    buffer = BytesIO()
-    pdf.output(buffer)
-    buffer.seek(0)
-
-    # Bouton de téléchargement
-    st.download_button(
-        label="📄 Télécharger le rapport PDF",
-        data=buffer,
-        file_name=f"rapport_{form_data.get('code_sujet', 'sujet')}.pdf",
-        mime="application/pdf"
-    )
 
 # --- DEMARRAGE --- #
 
