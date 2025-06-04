@@ -280,6 +280,7 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             "borne4": row["Borne4"]
         }
         for _, row in df_config.iterrows()
+        st.write(f"Traitement de : {row.to_dict()}")
         if row["Item"] in indicateurs_jauge and str(row["Min"]).strip() and str(row["Max"]).strip()
     }
 
