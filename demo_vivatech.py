@@ -542,11 +542,11 @@ def afficher_page_formulaire():
     
     with st.container():
         menu = st.columns([1, 1, 1])
-        with menu[1]:
+        with menu[0]:
             st.button("🏠 Accueil", on_click=lambda: st.session_state.update({"page": 0}))
-        with menu[2]:
+        with menu[1]:
             st.button("📊 Données", on_click=lambda: st.session_state.update({"page": 3}))
-        with menu[3]:
+        with menu[2]:
             st.button("📝 Saisie", on_click=lambda: st.session_state.update({"page": 0.3}))
     
     if page == 0:
