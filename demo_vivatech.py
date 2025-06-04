@@ -734,9 +734,7 @@ def afficher_page_formulaire():
 
         st.markdown("---")
 
-    elif page == 2:
-        
-    
+    elif page == 2: 
         # Afficher les résultats
         if "resultat" not in st.session_state:
             st.session_state["resultat"] = scorer_profil(st.session_state.form_data)
@@ -757,7 +755,7 @@ def afficher_page_formulaire():
                 "Coherence": st.session_state.resultat["coherence"],
                 "Radar_Analytique": st.session_state.resultat["radar_analytique"],
                 "Alerte_Discordance": st.session_state.resultat["alerte_discordance"],
-                "Email": email,  # 👍 la bonne valeur au moment du clic
+                "Email": email
             })
 
             for k, v in st.session_state.resultat["scores"].items():
