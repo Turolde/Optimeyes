@@ -356,8 +356,11 @@ def afficher_resultats_complets(resultat, df_config, form_data):
 # --- DEMARRAGE --- #
 @st.cache_data
 def charger_config_formulaire():
-    df_items = pd.read_csv(FICHIER_ITEMS, sheet_name=FEUILLE_ITEMS)
+    df_items = pd.read_csv(FICHIER_ITEMS)
     df_items.columns = [str(col).strip().capitalize() for col in df_items.columns]
+
+    df_items["Page"] = pd.to_numeric(df_items["Page"], errors="coerce").fillna(0).astype(int)
+
     colonnes_attendues = ["Item", "Description", "Type", "Décimales", "Unité", "Options", "Min", "Max", "Default", "Step", "Borne1", "Borne2", "Borne3", "Borne4", "Bulle1", "Bulle2", "Question", "Page"]
     for col in colonnes_attendues:
         if col not in df_items.columns:
