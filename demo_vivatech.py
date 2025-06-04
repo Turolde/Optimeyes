@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import qrcode
 from io import BytesIO
 
-FICHIER_ITEMS = "Vivatech_Optimeyes.xlsx"
+@st.cache_data
+
+FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
 FEUILLE_ITEMS = "Sheet1"
 COLONNE_ITEMS = "Item"
@@ -355,9 +357,8 @@ def afficher_resultats_complets(resultat, df_config, form_data):
 
 # --- DEMARRAGE --- #
 
-@st.cache_data
 def charger_config_formulaire():
-    df_items = pd.read_excel(FICHIER_ITEMS, sheet_name=FEUILLE_ITEMS)
+    df_items = pd.read_csv(FICHIER_ITEMS, sheet_name=FEUILLE_ITEMS)
     df_items.columns = [str(col).strip().capitalize() for col in df_items.columns]
     colonnes_attendues = ["Item", "Description", "Type", "Décimales", "Unité", "Options", "Min", "Max", "Default", "Step", "Borne1", "Borne2", "Borne3", "Borne4", "Bulle1", "Bulle2", "Question", "Page"]
     for col in colonnes_attendues:
