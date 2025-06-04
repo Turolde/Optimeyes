@@ -604,10 +604,7 @@ def afficher_page_formulaire():
 
         with st.form("formulaire_saisie"):
             saisie = {}
-            st.write("📄 Types des colonnes")
-            st.write(df_config.dtypes)
-            st.write("🔢 Valeurs distinctes dans Page :")
-            st.write(df_config["Page"].unique())
+            st.write("Valeurs distinctes dans Page :", df_config["Page"].unique())
             page_config = df_config[df_config["Page"] == (1 if page == 0.3 else 2)]
 
             for _, row in page_config.iterrows():
