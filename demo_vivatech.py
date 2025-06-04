@@ -354,7 +354,7 @@ def afficher_resultats_complets(resultat, df_config, form_data):
                 st.markdown(f"<span style='font-size: 0.9em; color: grey;'>{commentaire}</span>", unsafe_allow_html=True)
 
 # --- DEMARRAGE --- #
-
+@st.cache_data
 def charger_config_formulaire():
     df_items = pd.read_csv(FICHIER_ITEMS, sheet_name=FEUILLE_ITEMS)
     df_items.columns = [str(col).strip().capitalize() for col in df_items.columns]
@@ -866,6 +866,6 @@ def afficher_page_formulaire():
 
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
-@st.cache_data
+
 if __name__ == "__main__":
     afficher_page_formulaire()
