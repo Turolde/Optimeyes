@@ -735,32 +735,43 @@ def afficher_page_formulaire():
         st.markdown("---")
 
     elif page == 2:
-        resultat = scorer_profil(st.session_state.form_data)
-        donnee_complete = st.session_state.form_data.copy()
-        donnee_complete.update({
-            "Profil": resultat["profil"],
-            "Score_Profil_Dominant": resultat["score_profil_dominant"],
-            "Indice_Subjectif": resultat["indice_subjectif"],
-            "indice_Performance": resultat["indice_performance"],
-            "Score_Global": resultat["score_global"],
-            "Coherence": resultat["coherence"],
-            "Radar_Analytique": resultat["radar_analytique"],
-            "Alerte_Discordance": resultat["alerte_discordance"],
-        })
-        # Ajout des scores par profil
-        for k, v in resultat["scores"].items():
-            donnee_complete[f"Score_{k}"] = v
-
-        # ➕ Enregistrer dans Excel
-        df_ligne = pd.DataFrame([donnee_complete])
-        try:
-            df_exist = pd.read_excel(FICHIER_SORTIE)
-            df_new = pd.concat([df_exist, df_ligne], ignore_index=True)
-        except FileNotFoundError:
-            df_new = df_ligne
-        df_new.to_excel(FICHIER_SORTIE, index=False)
         
-        afficher_resultats_complets(resultat, df_config, st.session_state.form_data)
+    
+        # Afficher les résultats
+        if "resultat" not in st.session_state:
+            st.session_state["resultat"] = scorer_profil(st.session_state.form_data)
+
+        afficher_resultats_complets(
+            st.session_state["resultat"], df_config, st.session_state.form_data
+        )
+        email = st.text_input("Souhaitez-vous recevoir un récapitulatif ou donner votre avis ? (e-mail facultatif)")
+        # Enregistrer avec clique sur un bouton
+        if st.button("Valider et enregistrer"):
+            donnee_complete = st.session_state.form_data.copy()
+            donnee_complete.update({
+                "Profil": st.session_state.resultat["profil"],
+                "Score_Profil_Dominant": st.session_state.resultat["score_profil_dominant"],
+                "Indice_Subjectif": st.session_state.resultat["indice_subjectif"],
+                "indice_Performance": st.session_state.resultat["indice_performance"],
+                "Score_Global": st.session_state.resultat["score_global"],
+                "Coherence": st.session_state.resultat["coherence"],
+                "Radar_Analytique": st.session_state.resultat["radar_analytique"],
+                "Alerte_Discordance": st.session_state.resultat["alerte_discordance"],
+                "Email": email,  # 👍 la bonne valeur au moment du clic
+            })
+
+            for k, v in st.session_state.resultat["scores"].items():
+                donnee_complete[f"Score_{k}"] = v
+
+            df_ligne = pd.DataFrame([donnee_complete])
+            try:
+                df_exist = pd.read_excel(FICHIER_SORTIE)
+                df_new = pd.concat([df_exist, df_ligne], ignore_index=True)
+            except FileNotFoundError:
+                df_new = df_ligne
+            df_new.to_excel(FICHIER_SORTIE, index=False)
+
+            st.success("✅ Résultat enregistré.")
 
     elif page == 3:
         st.subheader("📊 Données enregistrées")
