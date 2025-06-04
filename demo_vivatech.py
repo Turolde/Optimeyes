@@ -609,7 +609,6 @@ def afficher_page_formulaire():
             page_config = df_config[df_config["Page"] == (1 if page == 0.3 else 2)]
 
             for _, row in page_config.iterrows():
-                st.write(f"Traitement de : {row.to_dict()}")
                 description = row.get("Description").strip()
                 if row.get("Question", "").strip():
                     question = f"**{row['Question'].strip()}**"
