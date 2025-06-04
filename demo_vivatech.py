@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import qrcode
 from io import BytesIO
 
-@st.cache_data
-
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
 FEUILLE_ITEMS = "Sheet1"
@@ -868,6 +866,6 @@ def afficher_page_formulaire():
 
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
-
+@st.cache_data
 if __name__ == "__main__":
     afficher_page_formulaire()
