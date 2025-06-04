@@ -4,6 +4,14 @@ import matplotlib.pyplot as plt
 import qrcode
 from io import BytesIO
 
+st.title("🔍 Test Chargement Fichier Excel")
+
+try:
+    df = pd.read_excel("Vivatech_Optimeyes.xlsx")
+    st.success("Fichier chargé ✅")
+    st.write(df.head())
+except Exception as e:
+    st.error(f"Erreur : {e}")
 st.set_page_config(
     page_title="Optimeyes - Démo Profil Visuel",
     page_icon="👁️",
