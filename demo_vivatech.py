@@ -355,8 +355,9 @@ def afficher_resultats_complets(resultat, df_config, form_data):
 
 # --- DEMARRAGE --- #
 @st.cache_data
+@st.cache_data
 def charger_config_formulaire():
-    df_items = pd.read_csv(FICHIER_ITEMS)
+    df_items = pd.read_csv(FICHIER_ITEMS, sep=";", engine="python")
     df_items.columns = [str(col).strip().capitalize() for col in df_items.columns]
 
     df_items["Page"] = pd.to_numeric(df_items["Page"], errors="coerce").fillna(0).astype(int)
@@ -368,7 +369,7 @@ def charger_config_formulaire():
     df_items = df_items[colonnes_attendues].fillna("")
     df_items = df_items[df_items["Item"].str.strip() != ""]
     return df_items
-    
+
 # Fonction de notation selon les valeurs observées
 def noter(variable, valeur):
     if variable == "Decision_Visuelle":
