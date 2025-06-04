@@ -537,7 +537,14 @@ def afficher_page_formulaire():
 
     page = st.session_state.page
 
-    st.image("optimeyes_logo_black.png", width=180)
+    st.markdown(
+    """
+    <div style='text-align: center;'>
+        <img src='optimeyes_logo_black.png' style='width: 100%; max-width: 1000px;' />
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
     st.subheader("Évaluation Visuo-Cognitive")
     
     with st.container():
