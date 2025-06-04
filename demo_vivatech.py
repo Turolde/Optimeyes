@@ -537,12 +537,11 @@ def afficher_page_formulaire():
 
     page = st.session_state.page
 
-    st.title("🧠 Optimeyes - Évaluation Visuo-Cognitive")
-
+    st.image("optimeyes_logo_black.png", width=180)
+    st.subheader("Évaluation Visuo-Cognitive")
+    
     with st.container():
-        menu = st.columns([1, 1, 1, 1])
-        with menu[0]:
-            st.image("optimeyes_logo_black.png", width=180)
+        menu = st.columns([1, 1, 1])
         with menu[1]:
             st.button("🏠 Accueil", on_click=lambda: st.session_state.update({"page": 0}))
         with menu[2]:
