@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import qrcode
+from fpdf import FPDF
 from io import BytesIO
 
 st.set_page_config(
@@ -358,6 +359,55 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             commentaire = resultat["commentaires"].get(indicateur, "")
             if commentaire:
                 st.markdown(f"<span style='font-size: 0.9em; color: grey;'>{commentaire}</span>", unsafe_allow_html=True)
+    # --- EXPORT PDF --- #
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+
+    # Titre
+    pdf.set_text_color(30, 58, 95)
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Rapport Visuo-Cognitif Optimeyes", ln=True, align="C")
+
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("Arial", size=12)
+
+    pdf.ln(10)
+    pdf.cell(0, 10, f"🧑 Code sujet : {form_data.get('code_sujet', 'Non précisé')}", ln=True)
+    pdf.cell(0, 10, f"🎯 Profil dominant : {profil['profil']}", ln=True)
+    pdf.cell(0, 10, f"📊 Score global : {profil['score_global']}%", ln=True)
+    pdf.cell(0, 10, f"🧠 Score subjectif : {profil['indice_subjectif']}%", ln=True)
+    pdf.cell(0, 10, f"🔬 Score performance : {profil['indice_performance']}%", ln=True)
+
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Scores par profil :", ln=True)
+
+    pdf.set_font("Arial", size=12)
+    for k, v in profil["scores"].items():
+        pdf.cell(0, 10, f"• {k} : {v}%", ln=True)
+
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Radar analytique (5 axes) :", ln=True)
+
+    pdf.set_font("Arial", size=12)
+    for axe, val in profil["radar_analytique"].items():
+        pdf.cell(0, 10, f"• {axe} : {val}%", ln=True)
+
+    # Export en mémoire
+    buffer = BytesIO()
+    pdf.output(buffer)
+    buffer.seek(0)
+
+    # Bouton de téléchargement
+    st.download_button(
+        label="📄 Télécharger le rapport PDF",
+        data=buffer,
+        file_name=f"rapport_{form_data.get('code_sujet', 'sujet')}.pdf",
+        mime="application/pdf"
+    )
 
 # --- DEMARRAGE --- #
 
@@ -780,6 +830,30 @@ def afficher_page_formulaire():
             cols = ["✅ Sélectionner"] + [col for col in df_affichage.columns if col != "✅ Sélectionner"]
             df_affichage = df_affichage[cols]
 
+            # Initialisation des cases si non déjà fait
+            if "select_all" not in st.session_state:
+                st.session_state.select_all = False
+            if "deselect_all" not in st.session_state:
+                st.session_state.deselect_all = False
+
+            # Boutons d'action
+            col_b1, col_b2 = st.columns(2)
+            with col_b1:
+                if st.button("✅ Tout sélectionner"):
+                    st.session_state.select_all = True
+                    st.session_state.deselect_all = False
+            with col_b2:
+                if st.button("❌ Tout désélectionner"):
+                    st.session_state.select_all = False
+                    st.session_state.deselect_all = True
+
+            # Mise à jour des cases à cocher
+            if st.session_state.select_all:
+                df_affichage["✅ Sélectionner"] = True
+            elif st.session_state.deselect_all:
+                df_affichage["✅ Sélectionner"] = False
+
+
             edited_df = st.data_editor(
                 df_affichage,
                 use_container_width=True,
@@ -790,9 +864,25 @@ def afficher_page_formulaire():
 
             # Extraction des lignes sélectionnées
             lignes_selectionnees = edited_df[edited_df["✅ Sélectionner"] == True]
-
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                df.to_excel(writer, index=False, sheet_name="Données")
+                output.seek(0)
+            st.download_button(
+                    label="📥 Télécharger toutes les données (Excel)",
+                    data=output,
+                    file_name="donnees_patients.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                    
             if not lignes_selectionnees.empty:
                 st.success(f"{len(lignes_selectionnees)} ligne(s) sélectionnée(s)")
+                
+                # Fichier Excel pour lignes sélectionnées
+                buffer = BytesIO()
+                with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                    lignes_selectionnees.to_excel(writer, index=False, sheet_name="Sélection")
+                    buffer.seek(0)
 
                 col1, col2 = st.columns(2)
 
@@ -803,6 +893,13 @@ def afficher_page_formulaire():
                         df_new.to_excel(FICHIER_SORTIE, index=False)
                         st.success("Lignes supprimées. Recharge en cours...")
                         st.rerun()
+                    
+                    st.download_button(
+                    label="📥 Télécharger les lignes sélectionnées (Excel)",
+                    data=buffer,
+                    file_name="donnees_selectionnees.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
 
                 if st.button("📈 Voir l’analyse des lignes sélectionnées"):
                     for i in lignes_selectionnees.index:
