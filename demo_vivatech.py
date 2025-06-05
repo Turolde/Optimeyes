@@ -146,6 +146,15 @@ def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_co
         ax.barh(0, end - start, left=start, color=color, edgecolor="white")
 
     ax.axvline(valeur, color="#004080", linewidth=2)
+    ax.text(
+        valeur, -0.2,  # position (x, y), y en dessous de la barre horizontale
+        f"{valeur:.0f}",  # texte affiché (arrondi entier)
+        ha='center',
+        va='top',
+        fontsize=9,
+        color="#004080",
+        fontweight='bold'
+    )
     ax.set_xlim(min_val, max_val)
     ax.set_yticks([])
     ax.set_xticks([min_val, max_val])
