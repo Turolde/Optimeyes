@@ -416,6 +416,8 @@ def noter(variable, valeur):
         return 3 if valeur <= 500 else 2 if valeur <= 700 else 1
     if variable == "NOGO" and isinstance(valeur, (int, float)):
         return 3 if valeur <= 5 else 2 if valeur <= 15 else 1
+    if variable == "Stereopsie" and isinstance(valeur, (int, float)):
+        return 3 if 30 <= valeur <= 60 else 2 if 61<= valeur <= 120 else 1 if valeur >= 121 else 0
     return 0
     
 # --- DIVERS --- #
