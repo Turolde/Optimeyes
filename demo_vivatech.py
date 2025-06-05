@@ -919,7 +919,7 @@ if not st.session_state["acces_autorisé"]:
         if mdp == PASSWORD:
             st.session_state["acces_autorisé"] = True
             st.success("✅ Accès autorisé.")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("❌ Mot de passe incorrect.")
 else:
