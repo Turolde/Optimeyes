@@ -147,7 +147,7 @@ def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_co
 
     ax.axvline(valeur, color="#004080", linewidth=1)
     ax.text(
-        valeur, -0.5,  # position (x, y), y en dessous de la barre horizontale
+        valeur, -0.6,  # position (x, y), y en dessous de la barre horizontale
         f"{valeur:.0f}",  # texte affiché (arrondi entier)
         ha='center',
         va='top',
