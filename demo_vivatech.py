@@ -84,7 +84,7 @@ def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
 # --- RADARS ---
-def afficher_radar(scores, profil_dominant):
+def afficher_radar(scores: dict, titre: str = ""):
     axes = list(scores.keys())
     valeurs = list(scores.values())
     # Boucler pour fermer le polygone
