@@ -6,3 +6,4 @@ qrcode
 xlsxwriter
 fpdf
 plotly
+numpy
