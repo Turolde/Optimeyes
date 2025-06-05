@@ -103,7 +103,7 @@ def afficher_radar(valeurs, taille=(4, 4), titre=None):
         fill='toself',
         line=dict(color="#444", width=2),
         name="Profil visuel",
-        fillcolor="#AAAAAA30"  # zone légèrement grisée
+        fillcolor='rgba(170, 170, 170, 0.2)'
     ))
 
     # Ajout de "pointes" visuelles via des points colorés
