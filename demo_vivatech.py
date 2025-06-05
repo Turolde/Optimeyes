@@ -145,9 +145,9 @@ def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_co
         color = couleurs[i] if i < len(couleurs) else "#cccccc"
         ax.barh(0, end - start, left=start, color=color, edgecolor="white")
 
-    ax.axvline(valeur, color="#004080", linewidth=2)
+    ax.axvline(valeur, color="#004080", linewidth=1)
     ax.text(
-        valeur, -0.7,  # position (x, y), y en dessous de la barre horizontale
+        valeur, -0.6,  # position (x, y), y en dessous de la barre horizontale
         f"{valeur:.0f}",  # texte affiché (arrondi entier)
         ha='center',
         va='top',
@@ -158,7 +158,7 @@ def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_co
     ax.set_xlim(min_val, max_val)
     ax.set_yticks([])
     ax.set_xticks([min_val, max_val])
-    ax.set_title(nom, fontsize=11, loc='left')
+    ax.set_title(nom, fontsize=12, loc='left')
     for spine in ax.spines.values():
         spine.set_visible(False)
 
