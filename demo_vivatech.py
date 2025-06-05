@@ -79,19 +79,38 @@ def commenter_indicateur(variable, score):
 
 # --- RADARS ---
 def afficher_radar(valeurs, taille=(4, 4), titre=None):
+    couleurs_profils = {
+        "Athlète": "#4CAF50",     # Vert
+        "E-sportif": "#2196F3",   # Bleu
+        "Pilote": "#FF9800",      # Orange
+        "Cognitif": "#9C27B0"     # Violet
+    }
+
     labels = list(valeurs.keys())
     donnees = list(valeurs.values())
-    donnees += donnees[:1]  # boucle pour fermer le radar
-    angles = [n / float(len(labels)) * 2 * 3.14159 for n in range(len(labels))]
+    donnees += donnees[:1]  # pour fermer le radar
+
+    angles = [n / float(len(labels)) * 2 * np.pi for n in range(len(labels))]
     angles += angles[:1]
 
     fig, ax = plt.subplots(figsize=taille, subplot_kw=dict(polar=True))
-    fig.patch.set_facecolor('#cccaca')
-    ax.plot(angles, donnees, linewidth=2)
-    ax.fill(angles, donnees, alpha=0.3)
+    fig.patch.set_facecolor('#cccaca')  # fond gris clair
+
+    # Courbe principale
+    ax.plot(angles, donnees, linewidth=2, color='#444')
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels)
 
+    # Colorier chaque secteur selon sa couleur de profil
+    for i in range(len(labels)):
+        angle0 = angles[i]
+        angle1 = angles[i + 1]
+        r = [0, donnees[i], donnees[i+1], 0]
+        theta = [angle0, angle0, angle1, angle1]
+
+        ax.fill(theta, r, color=couleurs_profils.get(labels[i], "#999"), alpha=0.25, linewidth=0)
+
+    # Ajouter le titre si fourni
     if titre:
         ax.set_title(titre, fontsize=12, pad=20)
 
