@@ -81,15 +81,15 @@ def commenter_indicateur(variable, score):
 # --- RADARS ---
 def afficher_radar(valeurs, taille=(4, 4), titre=None):
     couleurs_profils = {
-        "Athlète": "#4CAF50",     # Vert
-        "E-sportif": "#2196F3",   # Bleu
-        "Pilote": "#FF9800",      # Orange
-        "Cognitif": "#9C27B0"     # Violet
+        "Athlète": "#90CBC1",
+        "Pilote": "#A5B4DC",
+        "E-sportif": "#D8A5B8",
+        "Performer cognitif": "#B6A49C"
     }
 
     labels = list(valeurs.keys())
     donnees = list(valeurs.values())
-    donnees += donnees[:1]  # pour fermer le radar
+    donnees += donnees[:1]  
 
     angles = [n / float(len(labels)) * 2 * np.pi for n in range(len(labels))]
     angles += angles[:1]
