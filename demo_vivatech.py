@@ -80,54 +80,45 @@ def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
 # --- RADARS ---
-def afficher_radar(valeurs, taille=(4, 4), titre=None):
+import matplotlib.pyplot as plt
+import numpy as np
+import streamlit as st
+
+def afficher_radar(valeurs_dict, taille=(5, 5), titre=None):
     couleurs_profils = {
-        "Athlète": "#90CBC1",
-        "Pilote": "#A5B4DC",
-        "E-sportif": "#D8A5B8",
-        "Performer cognitif": "#B6A49C"
+        "Athlète": "#90CBC1",             # Vert d’eau
+        "Pilote": "#A5B4DC",              # Bleu lavande
+        "E-sportif": "#D8A5B8",           # Rose
+        "Performer cognitif": "#B6A49C"   # Brun clair
     }
 
-    labels = list(valeurs.keys())
-    scores = list(valeurs.values())
+    labels = list(next(iter(valeurs_dict.values())).keys())  # Prend les axes à partir du premier profil
+    nb_axes = len(labels)
 
-    # Fermer le polygone
-    labels += [labels[0]]
-    scores += [scores[0]]
+    angles = [n / float(nb_axes) * 2 * np.pi for n in range(nb_axes)]
+    angles += [angles[0]]  # Ferme le cercle
 
-    fig = go.Figure()
+    fig, ax = plt.subplots(figsize=taille, subplot_kw=dict(polar=True))
+    fig.patch.set_facecolor('#f0f0f0')
 
-    fig.add_trace(go.Scatterpolar(
-        r=scores,
-        theta=labels,
-        fill='toself',
-        line=dict(color="#444", width=2),
-        name="Profil visuel",
-        fillcolor='rgba(170, 170, 170, 0.2)'
-    ))
+    for profil, valeurs in valeurs_dict.items():
+        data = list(valeurs.values())
+        data += data[:1]  # boucle
 
-    # Ajout de "pointes" visuelles via des points colorés
-    for i, label in enumerate(labels[:-1]):
-        fig.add_trace(go.Scatterpolar(
-            r=[scores[i]],
-            theta=[label],
-            mode='markers',
-            marker=dict(size=12, color=couleurs_profils.get(label, "#999")),
-            showlegend=False
-        ))
+        ax.plot(angles, data, linewidth=2, label=profil, color=couleurs_profils.get(profil, "#999"))
+        ax.fill(angles, data, alpha=0.3, color=couleurs_profils.get(profil, "#999"))
 
-    fig.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 100]),
-        ),
-        title=titre,
-        showlegend=False,
-        width=int(taille[0]*150),  # approx conversion pouces → pixels
-        height=int(taille[1]*150),
-        margin=dict(l=40, r=40, t=60, b=40)
-    )
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    ax.set_yticklabels([])
+    ax.grid(True)
 
-    st.plotly_chart(fig, use_container_width=True)
+    if titre:
+        ax.set_title(titre, fontsize=13, pad=20)
+
+    ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.1))
+    st.pyplot(fig)
+
     
 # --- GRAPHIQUES INDIVIDUELS --- #
 
