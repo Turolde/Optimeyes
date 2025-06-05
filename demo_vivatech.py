@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import qrcode
 from io import BytesIO
-import plotly.graph_objects as go
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
@@ -79,43 +78,24 @@ def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
 # --- RADARS ---
-def afficher_radar(scores: dict, titre: str = ""):
-    axes = list(scores.keys())
-    valeurs = list(scores.values())
-    
-    axes += [axes[0]]
-    valeurs += [valeurs[0]]
-    
-    couleurs_profils = {
-    "Athlète": "#90CBC1",
-    "Pilote": "#A5B4DC",
-    "E-sportif": "#D8A5B8",
-    "Performer cognitif": "#B6A49C"
-    }
-    
-    profil_dominant = max(scores, key=scores.get)
-    couleur = couleurs_profils.get(profil_dominant, "#888888")
+def afficher_radar(valeurs, taille=(4, 4), titre=None):
+    labels = list(valeurs.keys())
+    donnees = list(valeurs.values())
+    donnees += donnees[:1]  # boucle pour fermer le radar
+    angles = [n / float(len(labels)) * 2 * 3.14159 for n in range(len(labels))]
+    angles += angles[:1]
 
-    fig = go.Figure()
+    fig, ax = plt.subplots(figsize=taille, subplot_kw=dict(polar=True))
+    fig.patch.set_facecolor('#cccaca')
+    ax.plot(angles, donnees, linewidth=2)
+    ax.fill(angles, donnees, alpha=0.3)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
 
-    fig.add_trace(go.Scatterpolar(
-        r=valeurs,
-        theta=axes,
-        fill='toself',
-        name=profil_dominant,
-        line=dict(color=couleurs_profils[profil_dominant]),
-        fillcolor=couleurs_profils[profil_dominant] + "80"  # 80 = transparence
-    ))
+    if titre:
+        ax.set_title(titre, fontsize=12, pad=20)
 
-    fig.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 100])
-        ),
-        showlegend=False,
-        margin=dict(l=40, r=40, t=40, b=40)
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    st.pyplot(fig)
     
 # --- GRAPHIQUES INDIVIDUELS --- #
 
