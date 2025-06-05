@@ -309,22 +309,23 @@ def afficher_resultats_complets(resultat, df_config, form_data):
     }
 
     col1, col2 = st.columns(2)
-    for i, indicateur in enumerate(donnees_individu):
+    compteur_affiches = 0  # compteur pour alterner proprement les colonnes
+    
+    for indicateur in donnees_individu:
         if indicateur == "Stereopsie" and not form_data.get("Stereopsie_activee", True):
             continue
-
+    
         valeur = donnees_individu[indicateur]
         seuils = seuils_reference.get(indicateur, {"min": 0, "max": 100})
         bornes = [seuils.get(f"borne{i}") for i in range(1, 5)]
-
+    
         # Couleurs adaptées
         great = "#66ccaa"     # vert doux
         good = "#b5d991"      # vert-jaune doux
         average = "#ffd580"   # beige doré
         bad = "#ff9c8a"       # corail
         worst = "#d66a6a"     # rouge doux
-
-
+    
         if indicateur == "Stereopsie":
             couleurs = [bad, great, average, bad]
         elif indicateur == "Vitesse_Horizontale":
@@ -333,11 +334,9 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             couleurs = [bad, average, great]
         elif indicateur == "GO":
             couleurs = [great, average, bad]
-        elif indicateur in ["NOGO"]:
+        elif indicateur == "NOGO":
             couleurs = [great, bad]
         elif indicateur == "Vision_Faible_Contraste":
-            valeur = donnees_individu[indicateur]
-
             if valeur == 0:
                 badge = "🟢 Bonne vision faible contraste"
                 message = "Aucune difficulté détectée en faible contraste."
@@ -346,7 +345,8 @@ def afficher_resultats_complets(resultat, df_config, form_data):
                 badge = "🔴 Échec ou difficulté"
                 message = "Difficulté à détecter les faibles contrastes."
                 couleur_fond = "#8b1e3f"
-
+    
+            col = col1 if compteur_affiches % 2 == 0 else col2
             with col:
                 st.markdown(
                     f"""
@@ -357,11 +357,11 @@ def afficher_resultats_complets(resultat, df_config, form_data):
                     """,
                     unsafe_allow_html=True
                 )
+            compteur_affiches += 1
             continue
-
         else:
             couleurs = None
-
+    
         fig = plot_jauge_multizone(
             nom=indicateur,
             valeur=valeur,
@@ -370,13 +370,14 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             bornes_abs=bornes,
             custom_colors=couleurs
         )
-
-        col = col1 if i % 2 == 0 else col2
+    
+        col = col1 if compteur_affiches % 2 == 0 else col2
         with col:
             st.pyplot(fig)
             commentaire = resultat["commentaires"].get(indicateur, "")
             if commentaire:
                 st.markdown(f"<span style='font-size: 0.9em; color: grey;'>{commentaire}</span>", unsafe_allow_html=True)
+        compteur_affiches += 1
 
 # --- DEMARRAGE --- #
 @st.cache_data
