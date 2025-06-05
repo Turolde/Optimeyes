@@ -907,19 +907,21 @@ def afficher_page_formulaire():
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
             
-PASSWORD = "demooptimeyes2025"
+PASSWORD = "demooptimeyes"
 
-with st.form("auth_form"):
-    mdp = st.text_input("🔒 Entrez le mot de passe pour accéder à l'app :", type="password")
-    submitted = st.form_submit_button("Valider")
+if "acces_autorisé" not in st.session_state:
+    st.session_state["acces_autorisé"] = False
 
-if submitted:
-    if mdp == PASSWORD:
-        st.success("✅ Accès autorisé.")
-        st.session_state["acces_autorisé"] = True
-    else:
-        st.error("❌ Mot de passe incorrect.")
-
-if st.session_state.get("acces_autorisé"):  
-    if __name__ == "__main__":
-        afficher_page_formulaire()
+if not st.session_state["acces_autorisé"]:
+    # 🔓 Afficher le champ de mot de passe uniquement si non connecté
+    mdp = st.text_input("🔒 Entrez le mot de passe :", type="password")
+    if st.button("Valider"):
+        if mdp == PASSWORD:
+            st.session_state["acces_autorisé"] = True
+            st.success("✅ Accès autorisé.")
+            st.experimental_rerun()
+        else:
+            st.error("❌ Mot de passe incorrect.")
+else:
+    # ✅ On n’affiche plus rien du tout une fois connecté
+    afficher_page_formulaire()
