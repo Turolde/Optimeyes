@@ -922,4 +922,4 @@ if submitted:
 
 if st.session_state.get("acces_autorisé"):  
     if __name__ == "__main__":
-    afficher_page_formulaire()
+        afficher_page_formulaire()
