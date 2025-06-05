@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import qrcode
+import numpy as np
 from io import BytesIO
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
