@@ -11,12 +11,7 @@ FEUILLE_ITEMS = "Sheet1"
 COLONNE_ITEMS = "Item"
 
 # --- PARAMETRES ---
-couleurs_profils = {
-    "Athlète": "#90CBC1",
-    "Pilote": "#A5B4DC",
-    "E-sportif": "#D8A5B8",
-    "Performer cognitif": "#B6A49C"
-}
+
 commentaires_indicateurs = {
     "Decision_Visuelle": {
         3: "Décision très rapide, excellente réactivité.",
@@ -87,9 +82,19 @@ def commenter_indicateur(variable, score):
 def afficher_radar(scores: dict, titre: str = ""):
     axes = list(scores.keys())
     valeurs = list(scores.values())
-    # Boucler pour fermer le polygone
+    
     axes += [axes[0]]
     valeurs += [valeurs[0]]
+    
+    couleurs_profils = {
+    "Athlète": "#90CBC1",
+    "Pilote": "#A5B4DC",
+    "E-sportif": "#D8A5B8",
+    "Performer cognitif": "#B6A49C"
+    }
+    
+    profil_dominant = max(scores, key=scores.get)
+    couleur = couleurs_profils.get(profil_dominant, "#888888")
 
     fig = go.Figure()
 
