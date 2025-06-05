@@ -84,7 +84,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
-def afficher_radar(valeurs_dict, taille=(5, 5), titre=None):
+def afficher_radar(valeurs, taille=(4, 4), titre=None):
     couleurs_profils = {
         "Athlète": "#90CBC1",             # Vert d’eau
         "Pilote": "#A5B4DC",              # Bleu lavande
