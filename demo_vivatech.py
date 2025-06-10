@@ -916,20 +916,35 @@ def afficher_page_formulaire():
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
 
-                if st.button("📈 Voir l’analyse des lignes sélectionnées"):
-                    for i in lignes_selectionnees.index:
-                        ligne = df.iloc[i].to_dict()
-
-                        radar = ligne.get("Radar_Analytique", {})
-                        if isinstance(radar, str):
-                            try:
-                                radar = eval(radar)
-                            except:
-                                radar = {}
-                        resultat = scorer_profil(ligne)
-                        code_sujet = ligne.get("Code_Sujet", f"Ligne {i+1}")
-                        st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
-                        afficher_resultats_complets(resultat, df_config, ligne)
+                    if st.button("📈 Voir l’analyse des lignes sélectionnées"):
+                        for i, idx in enumerate(lignes_selectionnees.index):
+                            ligne = df.iloc[idx].to_dict()
+                    
+                            # Interprétation radar string -> dict si besoin
+                            radar = ligne.get("Radar_Analytique", {})
+                            if isinstance(radar, str):
+                                try:
+                                    radar = eval(radar)
+                                except:
+                                    radar = {}
+                    
+                            resultat = scorer_profil(ligne)
+                            code_sujet = ligne.get("Code_Sujet", f"Sujet {idx + 1}")
+                    
+                            # Alternance de fond
+                            couleur_fond = "#f4f6fa" if i % 2 == 0 else "#e9edf3"
+                    
+                            st.markdown(
+                                f"""
+                                <div style="background-color: {couleur_fond}; padding: 15px; border-radius: 12px; margin-bottom: 30px;">
+                                    <h4 style="margin-top: 0;">📌 Résultats pour le sujet : {code_sujet}</h4>
+                                """,
+                                unsafe_allow_html=True
+                            )
+                    
+                            afficher_resultats_complets(resultat, df_config, ligne)
+                    
+                            st.markdown("</div>", unsafe_allow_html=True)
 
             else:
                 st.info("Aucune ligne sélectionnée pour le moment.")
