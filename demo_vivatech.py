@@ -916,42 +916,24 @@ def afficher_page_formulaire():
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
 
-            if st.button("📈 Voir l’analyse des lignes sélectionnées"):
-                for i, idx in enumerate(lignes_selectionnees.index):
-                    ligne = df.iloc[idx].to_dict()
-            
-                    # Interprétation radar string -> dict si besoin
-                    radar = ligne.get("Radar_Analytique", {})
-                    if isinstance(radar, str):
-                        try:
-                            radar = eval(radar)
-                        except:
-                            radar = {}
-            
-                    resultat = scorer_profil(ligne)
-                    code_sujet = ligne.get("Code_Sujet", f"Sujet {idx + 1}")
-            
-                 # Palette cyclique
-                couleurs_fond = ["#f4f4f4", "#d4f4e0", "#fff2cc"]  # gris, vert pâle, orange pâle
-                couleur_bloc = couleurs_fond[i % len(couleurs_fond)]
-                
-                # Bloc avec fond alterné
-                st.markdown(
-                    f"""
-                    <div style="background-color: {couleur_bloc}; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
-                        <h4 style="margin-top: 0;">📌 Résultats pour le sujet : {code_sujet}</h4>
-                    """,
-                    unsafe_allow_html=True
-                )
-                
-                afficher_resultats_complets(resultat, df_config, ligne)
-                
-                # Fin de bloc
-                st.markdown("</div>", unsafe_allow_html=True)
-
-
-            else:
-                st.info("Aucune ligne sélectionnée pour le moment.")
+                if st.button("📈 Voir l’analyse des lignes sélectionnées"):
+                        for i in lignes_selectionnees.index:
+                            ligne = df.iloc[i].to_dict()
+    
+                            radar = ligne.get("Radar_Analytique", {})
+                            if isinstance(radar, str):
+                                try:
+                                    radar = eval(radar)
+                                except:
+                                    radar = {}
+                            resultat = scorer_profil(ligne)
+                            code_sujet = ligne.get("Code_Sujet", f"Ligne {i+1}")
+                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
+                            afficher_resultats_complets(resultat, df_config, ligne)
+    
+    
+                else:
+                    st.info("Aucune ligne sélectionnée pour le moment.")
 
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
