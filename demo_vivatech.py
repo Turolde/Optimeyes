@@ -917,20 +917,34 @@ def afficher_page_formulaire():
                     )
 
                 if st.button("📈 Voir l’analyse des lignes sélectionnées"):
-                        for i in lignes_selectionnees.index:
-                            ligne = df.iloc[i].to_dict()
-    
-                            radar = ligne.get("Radar_Analytique", {})
-                            if isinstance(radar, str):
-                                try:
-                                    radar = eval(radar)
-                                except:
-                                    radar = {}
-                            resultat = scorer_profil(ligne)
-                            code_sujet = ligne.get("Code_Sujet", f"Ligne {i+1}")
-                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
-                            afficher_resultats_complets(resultat, df_config, ligne)
-    
+                    if lignes_selectionnees.empty:
+                        st.info("Aucune ligne sélectionnée.")
+                    else:
+                        onglets = []
+                        titres = []
+                
+                        for i, idx in enumerate(lignes_selectionnees.index):
+                            ligne = df.iloc[idx].to_dict()
+                            code_sujet = ligne.get("Code_Sujet", f"Sujet {i+1}")
+                            titres.append(f"📌 {code_sujet}")
+                            onglets.append(ligne)
+                
+                        tabs = st.tabs(titres)
+                
+                        for i, tab in enumerate(tabs):
+                            with tab:
+                                ligne = onglets[i]
+                
+                                radar = ligne.get("Radar_Analytique", {})
+                                if isinstance(radar, str):
+                                    try:
+                                        radar = eval(radar)
+                                    except:
+                                        radar = {}
+                
+                                resultat = scorer_profil(ligne)
+                                afficher_resultats_complets(resultat, df_config, ligne)
+
     
                 else:
                     st.info("Aucune ligne sélectionnée pour le moment.")
