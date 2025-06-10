@@ -80,9 +80,6 @@ def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
 # --- RADARS ---
-import matplotlib.pyplot as plt
-import numpy as np
-import streamlit as st
 
 def afficher_radar(valeurs, taille=(4, 4), titre=None):
     couleurs_profils = {
@@ -121,7 +118,14 @@ def afficher_radar(valeurs, taille=(4, 4), titre=None):
         ax.set_title(titre, fontsize=12, pad=20)
 
     st.pyplot(fig)
-    
+
+    if sauvegarder:
+            chemin = os.path.join("/tmp", nom_fichier)
+            fig.savefig(chemin, bbox_inches='tight')
+            plt.close(fig)
+            return chemin
+        else:
+            st.pyplot(fig)
 # --- GRAPHIQUES INDIVIDUELS --- #
 
 def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_colors=None):
