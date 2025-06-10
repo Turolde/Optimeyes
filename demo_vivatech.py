@@ -401,9 +401,9 @@ def afficher_resultats_complets(resultat, df_config, form_data):
         df_resume.reset_index(inplace=True)
         df_resume.columns = ["Champ", "Valeur"]
         st.dataframe(df_resume.style.set_properties(**{
-            'background-color': '#f8f9fa',
-            'color': '#212529',
-            'border-color': '#dee2e6'
+            'background-color': '#000000',
+            'color': '#ffffff',
+            'border-color': '#e0e0e0'
         }), use_container_width=True)
     else:
         st.info("Aucune donnée saisie à afficher.")
