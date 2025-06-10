@@ -122,59 +122,103 @@ def afficher_radar(valeurs, taille=(4, 4), titre=None, sauvegarder=False, nom_fi
 
     st.pyplot(fig)
 
-# --- GENERATION PDF --- #
+# --- GENERATION HTML --- #
 
-def generer_pdf_resultat_complet(resultat, form_data):
-    # Générer le radar analytique en image
-    radar_path = afficher_radar(resultat["radar_analytique"], sauvegarder=True, nom_fichier="radar.png")
+import os
+import uuid
 
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
+def generer_html_resultat_complet(resultat, form_data, radar_path=None, dossier="/tmp"):
+    """Génère un fichier HTML imitant l'analyse visuo-cognitive"""
+    
+    if radar_path is None:
+        radar_path = "radar.png"  # ou ton radar statique à inclure
 
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Passeport Visuo-Cognitif", ln=True, align='C')
+    html = f"""
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Passeport Visuo-Cognitif</title>
+        <style>
+            body {{
+                font-family: 'Segoe UI', sans-serif;
+                background-color: #f5f6fa;
+                color: #333;
+                padding: 30px;
+            }}
+            h1 {{
+                color: #003366;
+            }}
+            .score {{
+                background: #ffffff;
+                border-left: 6px solid #003366;
+                padding: 10px 15px;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }}
+            .badge {{
+                display: inline-block;
+                background: #dceefb;
+                color: #003366;
+                padding: 4px 8px;
+                border-radius: 5px;
+                margin-right: 6px;
+                font-size: 0.9em;
+            }}
+            .commentaire {{
+                background: #eef2f7;
+                padding: 8px 10px;
+                margin-bottom: 6px;
+                border-radius: 6px;
+                font-size: 0.95em;
+            }}
+            .section {{
+                margin-bottom: 30px;
+            }}
+        </style>
+    </head>
+    <body>
+        <h1>🔍 Analyse visuo-cognitive</h1>
 
-    pdf.set_font("Arial", size=12)
-    pdf.ln(8)
-    pdf.cell(0, 10, f"Profil dominant : {resultat['profil']} ({resultat['score_profil_dominant']} %)", ln=True)
-    pdf.cell(0, 10, f"Indice subjectif : {resultat['indice_subjectif']} %", ln=True)
-    pdf.cell(0, 10, f"Indice performance : {resultat['indice_performance']} %", ln=True)
-    pdf.cell(0, 10, f"Score global : {resultat['score_global']} %", ln=True)
+        <div class="section">
+            <div class="score"><strong>Profil dominant :</strong> {resultat['profil']} ({resultat['score_profil_dominant']} %)</div>
+            <div class="score"><strong>Indice subjectif :</strong> {resultat['indice_subjectif']} %</div>
+            <div class="score"><strong>Indice performance :</strong> {resultat['indice_performance']} %</div>
+            <div class="score"><strong>Score global :</strong> {resultat['score_global']} %</div>
+            <div class="score"><strong>Cohérence :</strong> {resultat['coherence']}</div>
+        </div>
 
-    pdf.ln(8)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Scores par profil :", ln=True)
-    pdf.set_font("Arial", size=11)
-    for profil, score in resultat["scores"].items():
-        pdf.cell(0, 8, f"{profil} : {score} %", ln=True)
+        <div class="section">
+            <h2>📊 Scores par profil</h2>
+            {''.join([f"<div class='badge'>{k} : {v} %</div>" for k, v in resultat['scores'].items()])}
+        </div>
 
-    pdf.ln(8)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Scores par axe (Radar analytique) :", ln=True)
-    pdf.set_font("Arial", size=11)
-    for axe, score in resultat["radar_analytique"].items():
-        pdf.cell(0, 8, f"{axe} : {score} %", ln=True)
+        <div class="section">
+            <h2>🧠 Radar analytique</h2>
+            <img src="{os.path.basename(radar_path)}" width="300px" />
+        </div>
 
-    pdf.ln(8)
-    if os.path.exists(radar_path):
-        pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, "Visualisation radar :", ln=True)
-        pdf.image(radar_path, w=160)
-        pdf.ln(5)
+        <div class="section">
+            <h2>💬 Commentaires</h2>
+            {''.join([f"<div class='commentaire'><strong>{k}</strong> : {v}</div>" for k, v in resultat['commentaires'].items()])}
+        </div>
+    </body>
+    </html>
+    """
 
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Commentaires :", ln=True)
-    pdf.set_font("Arial", size=10)
-    for k, commentaire in resultat["commentaires"].items():
-        pdf.multi_cell(0, 6, f"{k} : {commentaire}")
-        pdf.ln(1)
+    nom = f"analyse_{uuid.uuid4().hex[:6]}"
+    chemin_html = os.path.join(dossier, f"{nom}.html")
+    chemin_radar_dest = os.path.join(dossier, f"{nom}.png")
 
-    # Sauvegarde
-    nom_pdf = f"passeport_{uuid.uuid4().hex[:6]}.pdf"
-    chemin = os.path.join("/tmp", nom_pdf)
-    pdf.output(chemin)
-    return chemin
+    # Copier l'image radar à côté du HTML pour portabilité
+    if radar_path and os.path.exists(radar_path):
+        import shutil
+        shutil.copy(radar_path, chemin_radar_dest)
+
+    with open(chemin_html, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    return chemin_html, chemin_radar_dest
 
 # --- GRAPHIQUES INDIVIDUELS --- #
 
