@@ -167,30 +167,6 @@ def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_co
 # --- AFFICHAGE DES RESULTATS --- #
 
 def afficher_resultats_complets(resultat, df_config, form_data):
-    # --- SIDEBAR : Résumé synthétique ---
-    with st.sidebar:
-        st.markdown("### 🗒️ Données saisies")
-        
-        donnees_resume = {
-            k: v for k, v in form_data.items()
-            if isinstance(v, (str, int, float, bool)) and not isinstance(v, list)
-        }
-    
-        if donnees_resume:
-            for champ, valeur in donnees_resume.items():
-                # Affichage stylé par champ
-                st.markdown(
-                    f"""
-                    <div style='padding: 6px 10px; margin-bottom: 6px; border-radius: 8px;
-                                background-color: #f0f2f6; font-size: 0.9em;'>
-                        <strong>{champ} :</strong> {valeur}
-                    </div>
-                    """, unsafe_allow_html=True
-                )
-        else:
-            st.info("Aucune donnée saisie.")
-
-    
     with st.container():
         col1, col2 = st.columns(2)
 
@@ -411,6 +387,27 @@ def afficher_resultats_complets(resultat, df_config, form_data):
             if commentaire:
                 st.markdown(f"<span style='font-size: 0.9em; color: grey;'>{commentaire}</span>", unsafe_allow_html=True)
         compteur_affiches += 1
+        
+        # --- Résumé des données saisies ---
+    st.subheader("🗒️ Données saisies")
+
+    donnees_claires = {
+        k: v for k, v in form_data.items()
+        if isinstance(v, (str, int, float, bool)) and not isinstance(v, list)
+    }
+
+    if donnees_claires:
+        df_resume = pd.DataFrame.from_dict(donnees_claires, orient="index", columns=["Valeur"])
+        df_resume.reset_index(inplace=True)
+        df_resume.columns = ["Champ", "Valeur"]
+        st.dataframe(df_resume.style.set_properties(**{
+            'background-color': '#f8f9fa',
+            'color': '#212529',
+            'border-color': '#dee2e6'
+        }), use_container_width=True)
+    else:
+        st.info("Aucune donnée saisie à afficher.")
+
 
 # --- DEMARRAGE --- #
 @st.cache_data
