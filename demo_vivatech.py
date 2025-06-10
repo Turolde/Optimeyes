@@ -5,6 +5,9 @@ import qrcode
 import numpy as np
 from io import BytesIO
 import plotly.graph_objects as go
+import uuid
+import os
+
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
@@ -79,7 +82,61 @@ commentaires_indicateurs = {
 def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
-# --- RADARS ---
+# --- GENERATION PDF --- #
+
+def generer_pdf_resultat_complet(resultat, form_data):
+    # Générer le radar analytique en image
+    radar_path = afficher_radar(resultat["radar_analytique"], sauvegarder=True, nom_fichier="radar.png")
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Passeport Visuo-Cognitif", ln=True, align='C')
+
+    pdf.set_font("Arial", size=12)
+    pdf.ln(8)
+    pdf.cell(0, 10, f"Profil dominant : {resultat['profil']} ({resultat['score_profil_dominant']} %)", ln=True)
+    pdf.cell(0, 10, f"Indice subjectif : {resultat['indice_subjectif']} %", ln=True)
+    pdf.cell(0, 10, f"Indice performance : {resultat['indice_performance']} %", ln=True)
+    pdf.cell(0, 10, f"Score global : {resultat['score_global']} %", ln=True)
+
+    pdf.ln(8)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Scores par profil :", ln=True)
+    pdf.set_font("Arial", size=11)
+    for profil, score in resultat["scores"].items():
+        pdf.cell(0, 8, f"{profil} : {score} %", ln=True)
+
+    pdf.ln(8)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Scores par axe (Radar analytique) :", ln=True)
+    pdf.set_font("Arial", size=11)
+    for axe, score in resultat["radar_analytique"].items():
+        pdf.cell(0, 8, f"{axe} : {score} %", ln=True)
+
+    pdf.ln(8)
+    if os.path.exists(radar_path):
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, "Visualisation radar :", ln=True)
+        pdf.image(radar_path, w=160)
+        pdf.ln(5)
+
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Commentaires :", ln=True)
+    pdf.set_font("Arial", size=10)
+    for k, commentaire in resultat["commentaires"].items():
+        pdf.multi_cell(0, 6, f"{k} : {commentaire}")
+        pdf.ln(1)
+
+    # Sauvegarde
+    nom_pdf = f"passeport_{uuid.uuid4().hex[:6]}.pdf"
+    chemin = os.path.join("/tmp", nom_pdf)
+    pdf.output(chemin)
+    return chemin
+
+# --- RADARS --- #
 
 def afficher_radar(valeurs, taille=(4, 4), titre=None):
     couleurs_profils = {
@@ -124,8 +181,8 @@ def afficher_radar(valeurs, taille=(4, 4), titre=None):
             fig.savefig(chemin, bbox_inches='tight')
             plt.close(fig)
             return chemin
-        else:
-            st.pyplot(fig)
+    else:
+        st.pyplot(fig)
 # --- GRAPHIQUES INDIVIDUELS --- #
 
 def plot_jauge_multizone(nom, valeur, min_val, max_val, bornes_abs=[], custom_colors=None):
@@ -412,6 +469,14 @@ def afficher_resultats_complets(resultat, df_config, form_data):
     else:
         st.info("Aucune donnée saisie à afficher.")
 
+    chemin_pdf = generer_pdf_resultat_complet(resultat, form_data)
+    with open(chemin_pdf, "rb") as f:
+        st.download_button(
+            label="📄 Télécharger le passeport (PDF)",
+            data=f,
+            file_name=os.path.basename(chemin_pdf),
+            mime="application/pdf"
+        )
 
 # --- DEMARRAGE --- #
 @st.cache_data
@@ -945,7 +1010,7 @@ def afficher_page_formulaire():
     
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
-            
+
 PASSWORD = "demooptimeyes"
 
 if "acces_autorisé" not in st.session_state:
