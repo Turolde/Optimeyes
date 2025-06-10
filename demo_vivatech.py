@@ -890,17 +890,22 @@ def afficher_page_formulaire():
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
                     
+            # ✅ Affichage du message dynamique de sélection
             if not lignes_selectionnees.empty:
                 st.success(f"{len(lignes_selectionnees)} ligne(s) sélectionnée(s)")
-                
-                # Fichier Excel pour lignes sélectionnées
+            else:
+                st.info("Sélectionnez une ou plusieurs lignes à analyser ou exporter.")
+    
+            # Suite des actions si des lignes sont sélectionnées
+            if not lignes_selectionnees.empty:
+                # Fichier Excel des lignes sélectionnées
                 buffer = BytesIO()
                 with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
                     lignes_selectionnees.to_excel(writer, index=False, sheet_name="Sélection")
                     buffer.seek(0)
-
+    
                 col1, col2 = st.columns(2)
-
+    
                 with col1:
                     if st.button("🗑️ Supprimer les lignes sélectionnées"):
                         indices_a_supprimer = lignes_selectionnees.index
@@ -908,47 +913,32 @@ def afficher_page_formulaire():
                         df_new.to_excel(FICHIER_SORTIE, index=False)
                         st.success("Lignes supprimées. Recharge en cours...")
                         st.rerun()
-                    
-                    st.download_button(
-                    label="📥 Télécharger les lignes sélectionnées (Excel)",
-                    data=buffer,
-                    file_name="donnees_selectionnees.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    )
-
-                if st.button("📈 Voir l’analyse des lignes sélectionnées"):
-                    if lignes_selectionnees.empty:
-                        st.info("Aucune ligne sélectionnée.")
-                    else:
-                        onglets = []
-                        titres = []
-                
-                        for i, idx in enumerate(lignes_selectionnees.index):
-                            ligne = df.iloc[idx].to_dict()
-                            code_sujet = ligne.get("Code_Sujet", f"Sujet {i+1}")
-                            titres.append(f"📌 {code_sujet}")
-                            onglets.append(ligne)
-                
-                        tabs = st.tabs(titres)
-                
-                        for i, tab in enumerate(tabs):
-                            with tab:
-                                ligne = onglets[i]
-                
-                                radar = ligne.get("Radar_Analytique", {})
-                                if isinstance(radar, str):
-                                    try:
-                                        radar = eval(radar)
-                                    except:
-                                        radar = {}
-                
-                                resultat = scorer_profil(ligne)
-                                afficher_resultats_complets(resultat, df_config, ligne)
-
     
-                else:
-                    st.info("Aucune ligne sélectionnée pour le moment.")
-
+                    st.download_button(
+                        label="📥 Télécharger les lignes sélectionnées (Excel)",
+                        data=buffer,
+                        file_name="donnees_selectionnees.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+    
+                # ✅ Bouton activé seulement si au moins une ligne
+                if st.button("📈 Voir l’analyse des lignes sélectionnées"):
+                    tabs = st.tabs([
+                        f"📌 {ligne.get('Code_Sujet', f'Sujet {i+1}')}"
+                        for i, (_, ligne) in enumerate(lignes_selectionnees.iterrows())
+                    ])
+                    for tab, (_, ligne_row) in zip(tabs, lignes_selectionnees.iterrows()):
+                        with tab:
+                            ligne = ligne_row.to_dict()
+                            radar = ligne.get("Radar_Analytique", {})
+                            if isinstance(radar, str):
+                                try:
+                                    radar = eval(radar)
+                                except:
+                                    radar = {}
+                            resultat = scorer_profil(ligne)
+                            afficher_resultats_complets(resultat, df_config, ligne)
+    
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
             
