@@ -84,7 +84,7 @@ def commenter_indicateur(variable, score):
 
 # --- RADARS --- #
 
-def afficher_radar(valeurs, taille=(4, 4), titre=None):
+def afficher_radar(valeurs, taille=(4, 4), titre=None, sauvegarder=False, nom_fichier="radar.png"):
     couleurs_profils = {
         "Athlète": "#90CBC1",
         "Pilote": "#A5B4DC",
