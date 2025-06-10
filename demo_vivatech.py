@@ -122,14 +122,6 @@ def afficher_radar(valeurs, taille=(4, 4), titre=None, sauvegarder=False, nom_fi
 
     st.pyplot(fig)
 
-    if sauvegarder:
-            chemin = os.path.join("/tmp", nom_fichier)
-            fig.savefig(chemin, bbox_inches='tight')
-            plt.close(fig)
-            return chemin
-    else:
-        st.pyplot(fig)
-
 # --- GENERATION PDF --- #
 
 def generer_pdf_resultat_complet(resultat, form_data):
@@ -469,15 +461,6 @@ def afficher_resultats_complets(resultat, df_config, form_data):
         }), use_container_width=True)
     else:
         st.info("Aucune donnée saisie à afficher.")
-
-    chemin_pdf = generer_pdf_resultat_complet(resultat, form_data)
-    with open(chemin_pdf, "rb") as f:
-        st.download_button(
-            label="📄 Télécharger le passeport (PDF)",
-            data=f,
-            file_name=os.path.basename(chemin_pdf),
-            mime="application/pdf"
-        )
 
 # --- DEMARRAGE --- #
 @st.cache_data
