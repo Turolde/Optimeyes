@@ -931,20 +931,24 @@ def afficher_page_formulaire():
                     resultat = scorer_profil(ligne)
                     code_sujet = ligne.get("Code_Sujet", f"Sujet {idx + 1}")
             
-                    # Alternance de fond
-                    couleur_fond = "#f4f6fa" if i % 2 == 0 else "#e9edf3"
-            
-                    st.markdown(
-                        f"""
-                        <div style="background-color: {couleur_fond}; padding: 15px; border-radius: 12px; margin-bottom: 30px;">
-                            <h4 style="margin-top: 0;">📌 Résultats pour le sujet : {code_sujet}</h4>
-                        """,
-                        unsafe_allow_html=True
-                    )
-            
-                    afficher_resultats_complets(resultat, df_config, ligne)
-            
-                    st.markdown("</div>", unsafe_allow_html=True)
+                 # Palette cyclique
+                couleurs_fond = ["#f4f4f4", "#d4f4e0", "#fff2cc"]  # gris, vert pâle, orange pâle
+                couleur_bloc = couleurs_fond[i % len(couleurs_fond)]
+                
+                # Bloc avec fond alterné
+                st.markdown(
+                    f"""
+                    <div style="background-color: {couleur_bloc}; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h4 style="margin-top: 0;">📌 Résultats pour le sujet : {code_sujet}</h4>
+                    """,
+                    unsafe_allow_html=True
+                )
+                
+                afficher_resultats_complets(resultat, df_config, ligne)
+                
+                # Fin de bloc
+                st.markdown("</div>", unsafe_allow_html=True)
+
 
             else:
                 st.info("Aucune ligne sélectionnée pour le moment.")
