@@ -1036,7 +1036,7 @@ def afficher_page_formulaire():
                         f"📌 {ligne.get('Code_Sujet', f'Sujet {i+1}')}"
                         for i, (_, ligne) in enumerate(lignes_selectionnees.iterrows())
                     ])
-                    for tab, (_, ligne_row) in zip(tabs, lignes_selectionnees.iterrows()):
+                    for i, (tab, (_, ligne_row)) in enumerate(zip(tabs, lignes_selectionnees.iterrows())):
                         with tab:
                             ligne = ligne_row.to_dict()
                             radar = ligne.get("Radar_Analytique", {})
