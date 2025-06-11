@@ -91,7 +91,6 @@ commentaires_indicateurs = {
     }
 }
 
-
 def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
 
@@ -1047,6 +1046,7 @@ def afficher_page_formulaire():
                                 except:
                                     radar = {}
                             resultat = scorer_profil(ligne)
+                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
                             afficher_resultats_complets(resultat, df_config, ligne)
     
         except FileNotFoundError:
