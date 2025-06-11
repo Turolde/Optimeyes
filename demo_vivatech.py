@@ -1046,7 +1046,7 @@ def afficher_page_formulaire():
                                 except:
                                     radar = {}
                             resultat = scorer_profil(ligne)
-                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
+                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {Code_Sujet}")
                             afficher_resultats_complets(resultat, df_config, ligne)
     
         except FileNotFoundError:
