@@ -1031,6 +1031,8 @@ def afficher_page_formulaire():
                     )
     
                 # ✅ Bouton activé seulement si au moins une ligne
+                fonds = ["#f8f9fa", "#e6f4ea", "#fff4e6", "#e6f0fa", "#f5e6f7"]
+                
                 if st.button("📈 Voir l’analyse des lignes sélectionnées"):
                     tabs = st.tabs([
                         f"📌 {ligne.get('Code_Sujet', f'Sujet {i+1}')}"
@@ -1045,10 +1047,22 @@ def afficher_page_formulaire():
                                     radar = eval(radar)
                                 except:
                                     radar = {}
+                
                             resultat = scorer_profil(ligne)
                             code_sujet = ligne.get("Code_Sujet", f"Sujet {i+1}")
-                            st.markdown(f"---\n### 📌 Résultats pour le sujet : {code_sujet}")
+                            couleur_fond = fonds[i % len(fonds)]
+                
+                            st.markdown(
+                                f"""
+                                <div style="background-color:{couleur_fond}; padding: 25px; border-radius: 10px;">
+                                    <h3>📌 Résultats pour le sujet : {code_sujet}</h3>
+                                </div>
+                                """,
+                                unsafe_allow_html=True
+                            )
+                
                             afficher_resultats_complets(resultat, df_config, ligne)
+
     
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
