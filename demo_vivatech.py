@@ -7,6 +7,12 @@ from io import BytesIO
 import plotly.graph_objects as go
 import uuid
 import os
+import json
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+
+credentials_dict = st.secrets["google"]
+creds = service_account.Credentials.from_service_account_info(credentials_dict)
 
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
