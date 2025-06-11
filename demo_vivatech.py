@@ -10,15 +10,70 @@ import os
 import json
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 
 credentials_dict = st.secrets["google"]
 creds = service_account.Credentials.from_service_account_info(credentials_dict)
-
+FICHIER_ID_DRIVE = "1tWFNVymb8c3j3-62c6td0QEJ8pzcYX1zGOASnw9gPSU"
+NOM_TEMP = "data_optimeyes_temp.xlsx"
+URL_BASE = "https://demovivatechpy-ldfwsfsqqir7pkjjz4uhvc.streamlit.app"
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
 FEUILLE_ITEMS = "Sheet1"
 COLONNE_ITEMS = "Item"
+
+# --- Connexion Drive via secrets Streamlit ---
+def connect_drive():
+    creds = service_account.Credentials.from_service_account_info(
+        st.secrets["google"],
+        scopes=["https://www.googleapis.com/auth/drive"]
+    )
+    return build("drive", "v3", credentials=creds)
+
+# --- Télécharger fichier Excel depuis Drive ---
+def telecharger_fichier_excel():
+    service = connect_drive()
+    request = service.files().get_media(fileId=FICHIER_ID_DRIVE)
+    buffer = BytesIO()
+    downloader = MediaIoBaseDownload(buffer, request)
+    done = False
+    while not done:
+        status, done = downloader.next_chunk()
+    buffer.seek(0)
+    return pd.read_excel(buffer)
+
+# --- Sauvegarder fichier Excel vers Drive ---
+def ecraser_fichier_excel(df):
+    service = connect_drive()
+    buffer = BytesIO()
+    df.to_excel(buffer, index=False)
+    buffer.seek(0)
+    media = MediaFileUpload(buffer, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resumable=True)
+    service.files().update(fileId=FICHIER_ID_DRIVE, media_body=media).execute()
+
+# --- Générer un QR code vers le lien personnalisé ---
+def generer_qr_code(code_sujet):
+    url = f"{URL_BASE}?id={code_sujet}"
+    qr = qrcode.make(url)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer, url
+
+# --- Ajout de ligne + génération URL ---
+def enregistrer_et_partager(donnees):
+    code_sujet = str(uuid.uuid4())[:8]
+    donnees["Code_Sujet"] = code_sujet
+
+    try:
+        df = telecharger_fichier_excel()
+    except:
+        df = pd.DataFrame()
+
+    df_new = pd.concat([df, pd.DataFrame([donnees])], ignore_index=True)
+    ecraser_fichier_excel(df_new)
+    return code_sujet
 
 # --- PARAMETRES ---
 
