@@ -1033,7 +1033,7 @@ def afficher_page_formulaire():
                 # ✅ Bouton activé seulement si au moins une ligne
                 if st.button("📈 Voir l’analyse des lignes sélectionnées"):
                     tabs = st.tabs([
-                        f"| {ligne.get('Code_Sujet', f'Sujet {i+1}')} |"
+                        f"[ {ligne.get('Code_Sujet', f'Sujet {i+1}')} ]"
                         for i, (_, ligne) in enumerate(lignes_selectionnees.iterrows())
                     ])
                     for i, (tab, (_, ligne_row)) in enumerate(zip(tabs, lignes_selectionnees.iterrows())):
