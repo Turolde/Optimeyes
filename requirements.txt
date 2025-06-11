@@ -1,9 +1,11 @@
 streamlit
 pandas
 matplotlib
-openpyxl
-qrcode
-xlsxwriter
-fpdf
-plotly
 numpy
+plotly
+qrcode
+google-api-python-client
+google-auth
+google-auth-oauthlib
+openpyxl
+xlsxwriter
