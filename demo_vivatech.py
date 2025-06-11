@@ -21,63 +21,76 @@ commentaires_indicateurs = {
         3: "Décision très rapide, excellente réactivité.",
         2: "Décision de vitesse moyenne, correcte dans l’ensemble.",
         1: "Décision lente, réactivité diminuée.",
+        0: "Donnée absente ou non interprétable sur la capacité décisionnelle.",
     },
     "Fatigue_Visuelle": {
         3: "Très faible fatigue visuelle ressentie.",
         2: "Fatigue visuelle modérée.",
         1: "Fatigue visuelle importante signalée.",
+        0: "Fatigue visuelle non renseignée ou incohérente.",
     },
     "Sensibilite_Lumineuse": {
         3: "Aucune sensibilité à la lumière signalée.",
         2: "Sensibilité occasionnelle à la lumière.",
         1: "Sensibilité marquée à la lumière.",
+        0: "Aucune donnée disponible sur la sensibilité lumineuse.",
     },
     "Vision_Peri": {
         3: "Vision périphérique jugée bonne.",
         2: "Vision périphérique moyenne.",
         1: "Vision périphérique faible.",
+        0: "Évaluation périphérique non renseignée ou invalide.",
     },
     "Confort_Visuel": {
         3: "Très bon confort visuel perçu.",
         2: "Confort visuel acceptable.",
         1: "Confort visuel faible ou inconfort.",
+        0: "Absence de réponse sur le confort visuel.",
     },
     "Vitesse_Horizontale": {
         3: "Excellente vitesse visuelle horizontale.",
         2: "Vitesse correcte avec marge de progression.",
         1: "Vitesse visuelle lente ou perturbée.",
+        0: "Mesure horizontale non disponible ou inexploitée.",
     },
     "Vitesse_Verticale": {
         3: "Très bonne vitesse visuelle verticale.",
         2: "Vitesse verticale modérée.",
         1: "Réduction marquée de la vitesse verticale.",
+        0: "Vitesse verticale non mesurée ou invalide.",
     },
     "Vision_Faible_Contraste": {
         3: "Aucune difficulté détectée en faible contraste.",
         2: "Légère difficulté avec les contrastes faibles.",
         1: "Difficulté importante à détecter les faibles contrastes.",
+        0: "Aucune donnée exploitable sur la vision en faible contraste.",
     },
     "Stereopsie": {
         3: "Excellente perception 3D (stéréopsie).",
         2: "Perception 3D correcte.",
         1: "Perception 3D altérée ou lente.",
+        0: "Donnée absente ou test de stéréopsie non réalisé.",
     },
     "GO_NOGO": {
         3: "Très bon contrôle décisionnel (go/no-go).",
         2: "Contrôle correct avec vigilance.",
         1: "Décisions impulsives ou lenteur observée.",
+        0: "Go/No-Go non calculable (valeurs manquantes).",
     },
     "GO": {
         3: "Temps de réaction très rapide.",
         2: "Temps de réaction correct, mais améliorable.",
         1: "Temps de réaction lent ou erratique.",
+        0: "Temps de réaction non mesuré.",
     },
     "NOGO": {
         3: "Très bon contrôle inhibiteur (très peu d'erreurs).",
         2: "Contrôle correct avec quelques erreurs.",
         1: "Impulsivité marquée ou erreurs fréquentes.",
+        0: "Donnée inhibitrice absente ou invalide.",
     }
 }
+
 
 def commenter_indicateur(variable, score):
     return commentaires_indicateurs.get(variable, {}).get(score, "")
