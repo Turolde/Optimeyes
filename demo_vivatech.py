@@ -69,7 +69,7 @@ commentaires_indicateurs = {
         3: "Excellente perception 3D (stéréopsie).",
         2: "Perception 3D correcte.",
         1: "Perception 3D altérée ou lente.",
-        0: "Donnée absente ou test de stéréopsie non réalisé.",
+        0: "Données aberrantes ou interprétation non fiable.",
     },
     "GO_NOGO": {
         3: "Très bon contrôle décisionnel (go/no-go).",
