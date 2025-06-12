@@ -61,9 +61,6 @@ def ecraser_fichier_excel(df):
             fileId=FICHIER_ID_DRIVE,
             media_body=media
         ).execute()
-        st.success("✅ Fichier mis à jour sur Google Drive.")
-    except Exception as e:
-        st.error("❌ Échec de la mise à jour du fichier sur Drive.")
         st.exception(e)
 
 
