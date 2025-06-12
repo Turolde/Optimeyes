@@ -16,7 +16,7 @@ credentials_dict = st.secrets["google"]
 creds = service_account.Credentials.from_service_account_info(credentials_dict)
 FICHIER_ID_DRIVE = "162CoThxy9GcuJIWLB_jcpGxXBWsUz7UD"
 NOM_TEMP = "data_optimeyes_temp.xlsx"
-URL_BASE = "https://demovivatechpy-ldfwsfsqqir7pkjjz4uhvc.streamlit.app"
+URL_BASE = "https://demovivatechpy-ldfwsfsqqir7pkjjz4uhvc.streamlit.app/resultats"
 
 FICHIER_ITEMS = "Vivatech_Optimeyes.csv"
 FICHIER_SORTIE = "donnees_patients.xlsx"
