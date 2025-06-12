@@ -892,19 +892,39 @@ def afficher_page_formulaire():
                 "Alerte_Discordance": st.session_state.resultat["alerte_discordance"],
                 "Email": email
             })
-
+            
             for k, v in st.session_state.resultat["scores"].items():
                 donnee_complete[f"Score_{k}"] = v
-
+            
+            # Générer un code sujet unique
+            code_sujet = str(uuid.uuid4())[:8]
+            donnee_complete["Code_Sujet"] = code_sujet
+            
             df_ligne = pd.DataFrame([donnee_complete])
+            
+            # --- Enregistrement local ---
             try:
                 df_exist = pd.read_excel(FICHIER_SORTIE)
-                df_new = pd.concat([df_exist, df_ligne], ignore_index=True)
+                df_new_local = pd.concat([df_exist, df_ligne], ignore_index=True)
             except FileNotFoundError:
-                df_new = df_ligne
-            df_new.to_excel(FICHIER_SORTIE, index=False)
+                df_new_local = df_ligne
+            df_new_local.to_excel(FICHIER_SORTIE, index=False)
+            
+            # --- Enregistrement sur Drive ---
+            try:
+                df_drive = telecharger_fichier_excel()
+            except:
+                df_drive = pd.DataFrame()
+            df_new_drive = pd.concat([df_drive, df_ligne], ignore_index=True)
+            ecraser_fichier_excel(df_new_drive)
+            
+            # --- Génération QR code ---
+            qr_buffer, url_qr = generer_qr_code(code_sujet)
+            
+            st.success("✅ Résultat enregistré (local + Drive).")
+            st.markdown(f"**Lien d’accès direct aux résultats :** [🔗 {url_qr}]({url_qr})")
+            st.image(qr_buffer.getvalue(), caption="📲 Scannez ce QR code pour accéder au passeport visuel", width=200)
 
-            st.success("✅ Résultat enregistré.")
 
     elif page == 3:
         st.subheader("📊 Données enregistrées")
