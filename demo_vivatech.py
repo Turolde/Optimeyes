@@ -46,11 +46,26 @@ def telecharger_fichier_excel():
 # --- Sauvegarder fichier Excel vers Drive ---
 def ecraser_fichier_excel(df):
     service = connect_drive()
-    buffer = BytesIO()
-    df.to_excel(buffer, index=False)
-    buffer.seek(0)
-    media = MediaFileUpload(buffer, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resumable=True)
-    service.files().update(fileId=FICHIER_ID_DRIVE, media_body=media).execute()
+
+    chemin_temp = "/tmp/data_optimeyes_temp.xlsx"
+    df.to_excel(chemin_temp, index=False)
+
+    media = MediaFileUpload(
+        chemin_temp,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        resumable=True
+    )
+
+    try:
+        service.files().update(
+            fileId=FICHIER_ID_DRIVE,
+            media_body=media
+        ).execute()
+        st.success("✅ Fichier mis à jour sur Google Drive.")
+    except Exception as e:
+        st.error("❌ Échec de la mise à jour du fichier sur Drive.")
+        st.exception(e)
+
 
 # --- Générer un QR code vers le lien personnalisé ---
 def generer_qr_code(code_sujet):
