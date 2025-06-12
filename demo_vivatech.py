@@ -911,16 +911,26 @@ def afficher_page_formulaire():
                 "Alerte_Discordance": st.session_state.resultat["alerte_discordance"],
                 "Email": email
             })
-            
+        
             for k, v in st.session_state.resultat["scores"].items():
                 donnee_complete[f"Score_{k}"] = v
-            
-            # Générer un code sujet unique
-            code_sujet = str(uuid.uuid4())[:8]
+        
+            # Code_Sujet : récupéré ou généré
+            code_sujet = donnee_complete.get("Code_Sujet", "").strip()
+            if not code_sujet:
+                code_sujet = str(uuid.uuid4())[:8]
+                st.warning(f"🆕 Aucun code sujet fourni, identifiant généré automatiquement : `{code_sujet}`")
             donnee_complete["Code_Sujet"] = code_sujet
-            
+        
+            # 🔗 ID unique pour l’URL
+            url_id = str(uuid.uuid4())[:12]
+            donnee_complete["Url_ID"] = url_id
+        
+            # Construction de l’URL personnalisée
+            url_qr = f"{URL_BASE}?id={url_id}"
+        
             df_ligne = pd.DataFrame([donnee_complete])
-            
+        
             # --- Enregistrement local ---
             try:
                 df_exist = pd.read_excel(FICHIER_SORTIE)
@@ -928,18 +938,18 @@ def afficher_page_formulaire():
             except FileNotFoundError:
                 df_new_local = df_ligne
             df_new_local.to_excel(FICHIER_SORTIE, index=False)
-            
-            # --- Enregistrement sur Drive ---
+        
+            # --- Enregistrement Drive ---
             try:
                 df_drive = telecharger_fichier_excel()
             except:
                 df_drive = pd.DataFrame()
             df_new_drive = pd.concat([df_drive, df_ligne], ignore_index=True)
             ecraser_fichier_excel(df_new_drive)
-            
-            # --- Génération QR code ---
-            qr_buffer, url_qr = generer_qr_code(code_sujet)
-            
+        
+            # --- QR Code ---
+            qr_buffer, _ = generer_qr_code(url_id)
+        
             st.success("✅ Résultat enregistré (local + Drive).")
             st.markdown(f"**Lien d’accès direct aux résultats :** [🔗 {url_qr}]({url_qr})")
             st.image(qr_buffer.getvalue(), caption="📲 Scannez ce QR code pour accéder au passeport visuel", width=200)
