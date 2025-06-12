@@ -878,6 +878,10 @@ def afficher_page_formulaire():
         st.markdown("---")            
 
         email = st.text_input("Souhaitez-vous recevoir un récapitulatif ou donner votre avis ? (e-mail facultatif)")
+        if st.button("🔁 Test manuel Drive"):
+            df_test = pd.DataFrame({"Nom": ["Test"], "Valeur": [123]})
+            ecraser_fichier_excel(df_test)
+
         # Enregistrer avec clique sur un bouton
         if st.button("Valider et enregistrer"):
             donnee_complete = st.session_state.form_data.copy()
