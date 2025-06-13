@@ -882,8 +882,11 @@ def afficher_page_formulaire():
         else:
             st.warning("Confort visuel perçu satisfaisant. La stéréopsie est optionnelle.")
 
-        if st.button("Poursuivre avec les tests cliniques"):
-            st.session_state.page = 1
+        if st.button("Poursuivre"):
+            if st.session_state.get("subjectif_seul", False):
+                st.session_state.page = 2  # Aller directement aux résultats
+            else:
+                st.session_state.page = 1  # Continuer vers la page de tests cliniques
             st.rerun()
 
         st.markdown("---")
@@ -893,11 +896,11 @@ def afficher_page_formulaire():
         if "resultat" not in st.session_state:
             st.session_state["resultat"] = scorer_profil(st.session_state.form_data)
 
-        afficher_resultats_complets(
-            st.session_state["resultat"], df_config, st.session_state.form_data
-        )
-        
-        st.markdown("---")            
+        if not st.session_state.get("subjectif_seul", False):
+            afficher_resultats_complets(
+                st.session_state["resultat"], df_config, st.session_state.form_data
+            )
+            st.markdown("---")            
 
         email = st.text_input("Souhaitez-vous recevoir un récapitulatif ou donner votre avis ? (e-mail facultatif)")
 
