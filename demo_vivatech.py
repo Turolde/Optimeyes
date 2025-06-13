@@ -913,7 +913,7 @@ def afficher_page_formulaire():
                 "Coherence": st.session_state.resultat["coherence"],
                 "Radar_Analytique": st.session_state.resultat["radar_analytique"],
                 "Alerte_Discordance": st.session_state.resultat["alerte_discordance"],
-                "Subjectif_Seul" = st.session_state.get("subjectif_seul", False),
+                "Subjectif_Seul" : st.session_state.get("subjectif_seul", False),
                 "Email": email
             })
         
