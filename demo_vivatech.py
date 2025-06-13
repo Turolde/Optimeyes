@@ -23,6 +23,21 @@ FICHIER_SORTIE = "donnees_patients.xlsx"
 FEUILLE_ITEMS = "Sheet1"
 COLONNE_ITEMS = "Item"
 
+def afficher_footer_optimeyes():
+    st.markdown("""
+    <hr style="margin-top: 2em; margin-bottom: 1em; border: none; height: 2px;
+    background: linear-gradient(to right, #ff6f91, #ff9671, #ffc75f, #d65db1);">
+
+    <div style="background-color: #ffe4ec; padding: 16px; border-radius: 12px;
+    text-align: center; font-size: 0.9em; color: #802f4e;">
+
+    👩‍⚕️ <strong>Brigitte EKPE LORDONNOIS</strong> · Fondatrice<br>
+    💡 Chez <strong>Optimeyes</strong>, nous proposons des solutions innovantes pour optimiser votre vision et vos capacités cognitives grâce à des bilans spécialisés, des entraînements ciblés et des technologies de pointe.<br>
+    🔗 <a href="https://optimeyes.fr" target="_blank"
+    style="color: #d65db1; font-weight: bold;">Visitez optimeyes.fr</a>
+    </div>
+    """, unsafe_allow_html=True)
+
 # --- Connexion Drive via secrets Streamlit ---
 def connect_drive():
     creds = service_account.Credentials.from_service_account_info(
@@ -962,7 +977,6 @@ def afficher_page_formulaire():
             st.markdown(f"**Lien d’accès direct aux résultats :** [🔗 {url_qr}]({url_qr})")
             st.image(qr_buffer.getvalue(), caption="📲 Scannez ce QR code pour accéder au passeport visuel", width=200)
 
-
     elif page == 3:
         st.subheader("📊 Données enregistrées")
 
@@ -1072,9 +1086,10 @@ def afficher_page_formulaire():
                             code_sujet = ligne.get("Code_Sujet", f"Sujet {i+1}")
                             st.markdown(f"## Résultats pour le sujet : {code_sujet}")
                             afficher_resultats_complets(resultat, df_config, ligne)
+
         except FileNotFoundError:
             st.warning("Aucune donnée trouvée.")
-
+            
 PASSWORD = "demooptimeyes"
 
 if "acces_autorisé" not in st.session_state:
@@ -1093,3 +1108,4 @@ if not st.session_state["acces_autorisé"]:
 else:
     # ✅ On n’affiche plus rien du tout une fois connecté
     afficher_page_formulaire()
+    afficher_footer_optimeyes()
