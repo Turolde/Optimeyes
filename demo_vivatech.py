@@ -502,7 +502,7 @@ def afficher_resultats_complets(resultat, df_config, form_data):
 # --- DEMARRAGE --- #
 @st.cache_data
 def charger_config_formulaire():
-    df_items = pd.read_csv(FICHIER_ITEMS, sep=";",  encoding="latin1", engine="python")
+    df_items = pd.read_csv(FICHIER_ITEMS, sep=";",  encoding="utf-8", engine="python")
     df_items.columns = [str(col).strip().capitalize() for col in df_items.columns]
 
     df_items["Page"] = pd.to_numeric(df_items["Page"], errors="coerce").fillna(0).astype(int)
