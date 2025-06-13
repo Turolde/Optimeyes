@@ -751,6 +751,13 @@ def afficher_page_formulaire():
         titre = "➕ Page 1 : Questionnaire subjectif" if page == 0.3 else "🔬 Page 2 : Tests cliniques"
         st.subheader(titre)
 
+        if page == 0.3:
+            st.markdown("### ⚠️ Mode subjectif uniquement")
+            st.session_state.subjectif_seul = st.checkbox(
+                "Ce test comporte uniquement des données subjectives (pas de tests cliniques)",
+                value=st.session_state.get("subjectif_seul", False)
+            )
+    
         with st.form("formulaire_saisie"):
             saisie = {}
             page_config = df_config[df_config["Page"] == (1 if page == 0.3 else 2)]
