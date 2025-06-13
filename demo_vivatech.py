@@ -385,8 +385,8 @@ def afficher_resultats_complets(resultat, df_config, form_data):
         "Vitesse_Verticale",
         "GO",
         "NOGO",
-        "Vision_Faible_Contraste",
-        "Stereopsie"
+        "Stereopsie",
+        "Vision_Faible_Contraste"
     ]
 
     donnees_individu = {
