@@ -6,7 +6,7 @@ Vitesse_Horizontale;Temps de réaction : saccades horizontales;num;2;0,00;ms;;0;
 Vitesse_Verticale;Temps de réaction : saccades verticales;num;2;0,00;ms;;0;1000;400;10;300;;;400;;;
 GO;GO - Temps de réponse moyen;num;2;0,00;ms;;0;1000;300;10;500;;;600;;;
 NOGO;NOGO - Pourcentage d’erreurs;num;2;0,00;%;;0;100;5;1;;;;10;;;
-Vision_Faible_Contraste;Résultat vision faible contraste;num;2;1,00;%;;0;100;0;0;;;;1;;;
+Vision_Faible_Contraste;Résultat vision faible contraste;num;2;1,00;%;;0;100;0;10;;;;1;;;
 Stereopsie;Résultat du test de stéréopsie;num;2;0,00;secondes d'arc;;0;150;45;1;;120;60;30;;;
 Decision_Visuelle;Prise de décision visuelle;radio;1;0,00;;"Rapide;Moyenne;Lente";;;;;;;;;;;Vous sentez-vous rapide dans vos prises de décision lorsqu’il faut réagir visuellement ?
 Fatigue_Visuelle;Niveau de fatigue visuelle ressenti;slider;1;0,00;/10;;1;10;5;1;;;;;Aucune fatigue ressentie;Forte fatigue;Ressentez-vous souvent une fatigue visuelle lors de vos activités quotidiennes ?
