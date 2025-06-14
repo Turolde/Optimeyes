@@ -1107,5 +1107,5 @@ def afficher_page_formulaire():
            # st.error("❌ Mot de passe incorrect.")
 #else:
     # ✅ On n’affiche plus rien du tout une fois connecté
-    afficher_page_formulaire()
-    afficher_footer_optimeyes()
+afficher_page_formulaire()
+afficher_footer_optimeyes()
